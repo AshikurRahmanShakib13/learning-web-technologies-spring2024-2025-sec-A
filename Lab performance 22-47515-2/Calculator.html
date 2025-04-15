@@ -132,13 +132,11 @@
       }
 
       function evaluateExpression(expression) {
-        // Split the expression into parts based on operators (+, -, *, /)
         const operators = ['+', '-', '*', '/'];
         let operator = '';
         let num1 = '';
         let num2 = '';
 
-        // Find the operator in the expression
         for (let i = 0; i < operators.length; i++) {
           if (expression.includes(operators[i])) {
             operator = operators[i];
