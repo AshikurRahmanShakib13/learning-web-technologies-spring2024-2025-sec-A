@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JS Only Calculator</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: #f0f0f0;
+        font-family: sans-serif;
+      }
+
+      .calculator {
+        background: #fff;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        width: 240px;
+      }
+
+      .display {
+        height: 40px;
+        padding: 10px;
+        font-size: 1.4em;
+        text-align: right;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+        margin-bottom: 5px;
+      }
+
+      .row button {
+        padding: 15px;
+        font-size: 1em;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calculator">
+      <div class="display" id="display">0</div>
+
+      <div class="row">
+        <button>C</button>
+        <button>%</button>
+        <button>/</button>
+        <button>*</button>
+      </div>
+      <div class="row">
+        <button>7</button>
+        <button>8</button>
+        <button>9</button>
+        <button>-</button>
+      </div>
+      <div class="row">
+        <button>4</button>
+        <button>5</button>
+        <button>6</button>
+        <button>+</button>
+      </div>
+      <div class="row">
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>=</button>
+      </div>
+      <div class="row">
+        <button>0</button>
+        <button>.</button>
+        <button></button>
+        <button></button>
+      </div>
+    </div>
+
+    <script>
+      const display = document.getElementById('display');
+      const buttons = document.querySelectorAll('button');
+
+      let current = '';
+      let resetNext = false;
+
+      function handleClick(val) {
+        if (val === 'C') {
+          current = '';
+          display.textContent = '0';
+          return;
+        }
+
+        if (val === '%') {
+          const number = parseFloat(current);
+          if (!isNaN(number)) {
+            current = (number / 100).toString();
+            display.textContent = current;
+          } else {
+            display.textContent = 'Error';
+            current = '';
+          }
+          return;
+        }
+
+        if (val === '=') {
+          const result = evaluateExpression(current);
+          if (result !== null) {
+            display.textContent = result;
+            current = result.toString();
+          } else {
+            display.textContent = 'Error';
+            current = '';
+          }
+          resetNext = true;
+          return;
+        }
+
+        if (resetNext) {
+          current = '';
+          resetNext = false;
+        }
+
+        current += val;
+        display.textContent = current;
+      }
+
+      function evaluateExpression(expression) {
+        // Split the expression into parts based on operators (+, -, *, /)
+        const operators = ['+', '-', '*', '/'];
+        let operator = '';
+        let num1 = '';
+        let num2 = '';
+
+        // Find the operator in the expression
+        for (let i = 0; i < operators.length; i++) {
+          if (expression.includes(operators[i])) {
+            operator = operators[i];
+            const [left, right] = expression.split(operator);
+            num1 = parseFloat(left);
+            num2 = parseFloat(right);
+            break;
+          }
+        }
+
+        // Check for valid numbers and operator
+        if (!isNaN(num1) && !isNaN(num2) && operator !== '') {
+          switch (operator) {
+            case '+':
+              return num1 + num2;
+            case '-':
+              return num1 - num2;
+            case '*':
+              return num1 * num2;
+            case '/':
+              if (num2 !== 0) {
+                return num1 / num2;
+              } else {
+                return null; // Avoid division by zero
+              }
+            default:
+              return null;
+          }
+        } else {
+          return null; // Invalid expression
+        }
+      }
+
+      buttons.forEach(button => {
+        const val = button.textContent.trim();
+        if (val !== '') {
+          button.addEventListener('click', () => handleClick(val));
+        }
+      });
+    </script>
+  </body>
+</html>
