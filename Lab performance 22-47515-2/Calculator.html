@@ -147,7 +147,6 @@
           }
         }
 
-        // Check for valid numbers and operator
         if (!isNaN(num1) && !isNaN(num2) && operator !== '') {
           switch (operator) {
             case '+':
@@ -160,13 +159,13 @@
               if (num2 !== 0) {
                 return num1 / num2;
               } else {
-                return null; // Avoid division by zero
+                return null; 
               }
             default:
               return null;
           }
         } else {
-          return null; // Invalid expression
+          return null; 
         }
       }
 
